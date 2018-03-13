@@ -12,4 +12,25 @@
    .participants-font-size {
       font-size: large;
    }
+
+   .KambiWidget-card-background-color {
+       background-color: #071260 !important;
+
+       header {
+            background: #0c1fa7;
+            color: white;
+       }
+   }
+
+   .KambiWidget-outcome {
+       background: #f76919;
+
+       &:hover {
+           background: blue;
+       }
+
+       &:active {
+           background: red;
+       }
+   }
 }

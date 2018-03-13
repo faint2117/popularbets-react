@@ -9,7 +9,7 @@ import './index.html';
 // http://kambi-sportsbook-widgets.github.io/widget-core-library/module-coreLibrary.html#.init__anchor
 coreLibrary.init({
    eventId: null,
-   title: 'Event Widget'
+   title: 'Apuestas más populares'
 })
 .then(() => {
    // Check if the widget has an eventId supplied and get that event. If not get live events
@@ -19,27 +19,28 @@ coreLibrary.init({
       return offeringModule.getEvent(coreLibrary.args.eventId);
    } else {
       // Get live events
-      return offeringModule.getLiveEvents();
+      return offeringModule.doRequest('/betoffer/landing.json');
    }
 })
 .then((events)=> {
+   const highlights = events.result.find(x => x.name === 'highlights');
    let event;
    // Figure out if we have an array of events or a single one
-   if (events.events) {
-      for (let i = 0; i < events.events.length; i++) {
+   if (highlights.events) {
+      for (let i = 0; i < highlights.events.length; i++) {
          // Check that the event is a match and has betoffers
-         if (!event && events.events[i].event.type === 'ET_MATCH' && events.events[i].betOffers.length) {
-            event = events.events[i];
+         if (!event && highlights.events[i].event.type === 'ET_MATCH') {
+            event = highlights.events[i];
          }
       }
       // Get the event with all its betoffers (getLiveEbents only returns one betoffer)
       // http://kambi-sportsbook-widgets.github.io/widget-core-library/module-offeringModule.html#.getLiveEventsByFilter__anchor
-      return offeringModule.getLiveEvent(event.event.id);
+      return offeringModule.getEvent(event.event.id);
    }
    // Check that the event type is 'ET_MATCH' and has betoffers
-   if (events.event.type === 'ET_MATCH' && events.event.betoffers.length) {
-      return events;
-   }
+//    if (events.event.type === 'ET_MATCH' && events.event.betoffers.length) {
+//       return events;
+//    }
    throw new Error('Event widget: The id provided does not correspont to a match or has no bet offers', events.event)
 })
 .then((event) => {
